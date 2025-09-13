@@ -1,3 +1,4 @@
+```
 tam_website-main/
 ├── index.html              # Main landing page
 ├── style.css              # Main stylesheet
@@ -14,10 +15,7 @@ tam_website-main/
 │   ├── code_logo.png
 │   └── ...
 └── .vscode/             # VS Code configuration
-
-# TAM Club Website
-
-> **The official platform for The AI & ML Club, VIT Vellore**
+```
 
 ---
 
@@ -154,3 +152,4 @@ tam_website-main/
 ## ⚖️ License
 
 This project is proprietary and maintained by The AI & ML Club, VIT Vellore. All rights reserved.
+
