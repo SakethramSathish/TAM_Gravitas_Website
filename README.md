@@ -122,16 +122,6 @@ tam_website-main/
 
 ---
 
-## 🖥️ Screenshots
-
-<p align="center">
-  <img src="./logo.jpeg" alt="TAM Club Logo" width="120"/>
-</p>
-
-![Glassmorphism UI Example](register_page_bg.png)
-
----
-
 ## 🤝 Contributing
 
 1. Fork this repository
@@ -152,4 +142,5 @@ tam_website-main/
 ## ⚖️ License
 
 This project is proprietary and maintained by The AI & ML Club, VIT Vellore. All rights reserved.
+
 
