@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Registration - Code Cortex</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: url("register_page_bg.png"); background-size: cover; padding: 40px 0; }
+    .event-container { width: 100%; max-width: 800px; padding: 20px; }
+    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 30px; padding: 40px; border: 1px solid rgba(255,255,255,0.1); }
+    .form-content { color: white; }
+    .form-content h1 { font-size: 48px; font-weight: 700; margin-bottom: 40px; text-align: center; }
+    .role-selection { display: flex; gap: 30px; justify-content: center; margin-bottom: 40px; }
+    .role-btn { background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 15px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; min-width: 200px; text-align: center; }
+    .role-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .role-btn.active { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.5); }
+    .registration-form { display: none; flex-direction: column; gap: 30px; max-width: 600px; margin: 0 auto; }
+    .registration-form.show { display: flex; }
+    .form-row { display: flex; gap: 20px; }
+    .form-group { flex: 1; }
+    .form-group input, .form-group select { width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 16px; }
+    .form-group input::placeholder { color: rgba(255,255,255,0.6); }
+    .member-section { background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+    .member-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: rgba(255,255,255,0.9); }
+    .register-btn { background: white; color: black; border: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 18px; cursor: pointer; transition: transform 0.3s ease; margin-top: 20px; }
+    .register-btn:hover { transform: translateY(-2px); }
+    .register-btn:disabled { background: rgba(255,255,255,0.3); cursor: not-allowed; transform: none; }
+    .back-btn { position: fixed; top: 30px; left: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    .back-btn:hover { background: rgba(255,255,255,0.2); transform: translateX(-5px); }
+    .result-message { margin-top: 20px; padding: 15px 20px; border-radius: 15px; font-size: 16px; font-weight: 600; text-align: center; backdrop-filter: blur(12px) saturate(180%); background-color: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 8px 25px rgba(0,0,0,0.2); display: none; transition: all 0.3s ease-in-out; }
+    .result-message.success { border-left: 5px solid #10b981; color: #d1fae5; }
+    .result-message.error { border-left: 5px solid #ef4444; color: #fee2e2; }
+    .success-window { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s ease-in-out; }
+    .success-window.show { display: flex; opacity: 1; }
+    .success-content { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 24px; padding: 40px; text-align: center; color: white; max-width: 500px; width: 90%; transform: translateY(20px); transition: transform 0.3s ease-in-out; }
+    .success-window.show .success-content { transform: translateY(0); }
+    .success-icon { width: 80px; height: 80px; background: rgba(46,213,115,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; }
+    .success-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; background: linear-gradient(45deg, #2ecc71, #27ae60); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .success-message { font-size: 16px; margin-bottom: 30px; line-height: 1.6; color: rgba(255,255,255,0.8); }
+    .reg-id { font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; font-size: 24px; font-weight: 700; letter-spacing: 2px; margin: 20px 0; color: #2ecc71; display: inline-block; }
+    .success-window button { background: rgba(46,213,115,0.2); color: #2ecc71; border: 1px solid rgba(46,213,115,0.4); padding: 12px 30px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+    .success-window button:hover { background: rgba(46,213,115,0.3); transform: translateY(-2px); }
+    @media (max-width: 768px) {
+      .role-selection { flex-direction: column; align-items: center; gap: 20px; }
+      .form-row { flex-direction: column; gap: 20px; }
+      .form-content h1 { font-size: 36px; }
+      .back-btn { top: 20px; left: 20px; padding: 10px 20px; font-size: 14px; }
+      .event-container { padding: 10px; }
+      .glass-card { padding: 20px; }
+      .member-section { padding: 15px; }
+      body { padding: 60px 0; }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+
+  <div class="event-container">
+    <div class="glass-card">
+      <div class="form-content">
+        <h1>REGISTRATION</h1>
+
+        <!-- Role Selection -->
+        <div class="role-selection" id="roleSelection">
+          <button type="button" class="role-btn" id="leaderBtn">👑 Register as Team Leader</button>
+          <button type="button" class="role-btn" id="memberBtn">👥 Register as Team Member</button>
+        </div>
+
+        <!-- Leader Form -->
+        <form class="registration-form" id="leaderForm">
+          <div class="form-row">
+            <div class="form-group"><input type="text" name="teamName" placeholder="Team Name" required></div>
+            <div class="form-group"><input type="number" name="teamSize" placeholder="Number of teammates (2-4)" min="2" max="4" required></div>
+          </div>
+
+          <div class="member-section">
+            <h3 class="member-title">Team Leader Details</h3>
+            <div class="form-row">
+              <div class="form-group"><input type="text" name="name" placeholder="Your Name" required></div>
+              <div class="form-group"><input type="text" name="registration" placeholder="Registration Number" required></div>
+            </div>
+            <div class="form-group"><input type="email" name="email" placeholder="Email ID" required></div>
+            <div class="form-group"><input type="tel" name="contact" placeholder="Contact Number" required></div>
+          </div>
+
+          <button type="submit" class="register-btn">CREATE TEAM</button>
+        </form>
+
+        <!-- Member Form -->
+        <form class="registration-form" id="memberForm">
+          <div class="form-group"><input type="text" name="teamId" placeholder="Team ID" required></div>
+          <div class="member-section">
+            <h3 class="member-title">Your Details</h3>
+            <div class="form-row">
+              <div class="form-group"><input type="text" name="name" placeholder="Your Name" required></div>
+              <div class="form-group"><input type="text" name="registration" placeholder="Registration Number" required></div>
+            </div>
+            <div class="form-group"><input type="email" name="email" placeholder="Email ID" required></div>
+            <div class="form-group"><input type="tel" name="contact" placeholder="Contact Number" required></div>
+          </div>
+
+          <button type="submit" class="register-btn">JOIN TEAM</button>
+        </form>
+
+        <div id="resultMessage" class="result-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Window -->
+  <div class="success-window" id="successWindow">
+    <div class="success-content">
+      <div class="success-icon">✨</div>
+      <h2 class="success-title" id="successTitle">Registration Successful!</h2>
+      <p class="success-message" id="successMessage">Your team has been successfully created.</p>
+      <div class="reg-id" id="teamIdDisplay"></div>
+      <button onclick="closeSuccessWindow()">Got it!</button>
+    </div>
+  </div>
+
+  <script>
+    const leaderBtn = document.getElementById('leaderBtn');
+    const memberBtn = document.getElementById('memberBtn');
+    const leaderForm = document.getElementById('leaderForm');
+    const memberForm = document.getElementById('memberForm');
+    const resultBox = document.getElementById('resultMessage');
+
+    // Role selection
+    leaderBtn.addEventListener('click', () => selectRole('leader'));
+    memberBtn.addEventListener('click', () => selectRole('member'));
+
+    function selectRole(role) {
+      leaderBtn.classList.remove('active');
+      memberBtn.classList.remove('active');
+      leaderForm.classList.remove('show');
+      memberForm.classList.remove('show');
+
+      if(role === 'leader') {
+        leaderBtn.classList.add('active'); leaderForm.classList.add('show');
+      } else {
+        memberBtn.classList.add('active'); memberForm.classList.add('show');
+      }
+    }
+
+    // Show message
+    function showMessage(msg, type) {
+      resultBox.innerText = msg;
+      resultBox.className = "result-message " + type;
+      resultBox.style.display = "block";
+      setTimeout(() => resultBox.style.display = "none", 6000);
+    }
+
+    // Success window
+    function showSuccessWindow(teamId, isLeader=true) {
+      document.getElementById('teamIdDisplay').textContent = teamId;
+      document.getElementById('successTitle').textContent = isLeader ? 'Team Created Successfully!' : 'Joined Team Successfully!';
+      document.getElementById('successMessage').textContent = isLeader 
+        ? 'Your team has been created. Share this Team ID with your teammates.' 
+        : 'You have successfully joined the team. Good luck!';
+      document.getElementById('successWindow').classList.add('show');
+    }
+
+    function closeSuccessWindow() {
+      document.getElementById('successWindow').classList.remove('show');
+      window.location.href = 'index.html';
+    }
+
+    // Leader form submit
+    leaderForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const btn = leaderForm.querySelector('.register-btn');
+      btn.disabled = true; btn.textContent = 'Creating Team...';
+      const data = Object.fromEntries(new FormData(leaderForm).entries());
+      fetch('http://localhost:3000/api/codecortex-register', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+      }).then(res => res.json())
+      .then(res => {
+        if(res.status==='success') { leaderForm.reset(); showSuccessWindow(res.team_id,true); }
+        else showMessage('❌ Failed: '+res.message, 'error');
+      }).catch(err => { console.error(err); showMessage('❌ An error occurred.', 'error'); })
+      .finally(()=>{ btn.disabled=false; btn.textContent='CREATE TEAM'; });
+    });
+
+    // Member form submit
+    memberForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const btn = memberForm.querySelector('.register-btn');
+      btn.disabled = true; btn.textContent = 'Joining Team...';
+      const data = Object.fromEntries(new FormData(memberForm).entries());
+      fetch('http://localhost:3000/api/codecortex-join', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+      }).then(res => res.json())
+      .then(res => {
+        if(res.status==='success') { memberForm.reset(); showSuccessWindow(res.team_id,false); }
+        else showMessage('❌ Failed: '+res.message, 'error');
+      }).catch(err => { console.error(err); showMessage('❌ An error occurred.', 'error'); })
+      .finally(()=>{ btn.disabled=false; btn.textContent='JOIN TEAM'; });
+    });
+  </script>
+</body>
+</html>
